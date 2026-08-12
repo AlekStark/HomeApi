@@ -1,5 +1,6 @@
 using HomeApi.Configuration;
 using Microsoft.OpenApi;
+using System.Reflection;
 
 namespace HomeApi
 {
@@ -9,11 +10,13 @@ namespace HomeApi
         {
 
             var builder = WebApplication.CreateBuilder(args);
-
+            
             builder.Configuration.AddJsonFile("HomeOptions.json", optional: true, reloadOnChange: true);
-            builder.Services.Configure<HomeOptions>(builder.Configuration.GetSection("HomeOptions"));
+            builder.Services.Configure<HomeOptions>(builder.Configuration);
             //builder.Configuration.AddJsonFile("HomeOptions.json", optional: false, reloadOnChange: true);
             // Add services to the container.
+            // Подключаем автомаппинг
+            
 
             builder.Services.AddControllers(); 
             
@@ -26,12 +29,12 @@ namespace HomeApi
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
+            // Подключаем автомаппинг
+            var assembly = Assembly.GetAssembly(typeof(MappingProfile));
+            builder.Services.AddAutoMapper(assembly);
+
             var app = builder.Build();
-            //var config = app.Services.GetRequiredService<IConfiguration>();
-            /*private IConfiguration Configuration
-            { get; } = new ConfigurationBuilder()
-            .AddJsonFile("HomeOptions.json")
-            .Build();*/
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
