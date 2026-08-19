@@ -9,7 +9,7 @@ namespace HomeApi
         public static void Main(string[] args)
         {
 
-            var builder = WebApplication.CreateBuilder(args);
+            var builder = WebApplication.CreateBuilder(args); 
             
             builder.Configuration.AddJsonFile("HomeOptions.json", optional: true, reloadOnChange: true);
             builder.Services.Configure<HomeOptions>(builder.Configuration);
