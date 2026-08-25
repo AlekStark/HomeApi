@@ -1,11 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using HomeApi.Contracts.Models.Devices;
 using HomeApi.Data.Models;
 using HomeApi.Data.Queries;
 using HomeApi.Data.Repos;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
 
 namespace HomeApi.Controllers
 {
@@ -44,9 +45,20 @@ namespace HomeApi.Controllers
             
             return StatusCode(200, resp);
         }
-        
+
         // TODO: Задание: напишите запрос на удаление устройства
-        
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteDevice(Guid id)
+        {
+            var device = await _devices.GetDeviceById(id);
+
+            if (device == null)
+                return StatusCode(400, $"Ошибка: Устройство с идентификатором {id} не существует.");
+
+            await _devices.DeleteDevice(device);
+            return StatusCode(200, "Устройство удалено.");
+        }
+
         /// <summary>
         /// Добавление нового устройства
         /// </summary>
@@ -97,5 +109,7 @@ namespace HomeApi.Controllers
 
             return StatusCode(200, $"Устройство обновлено! Имя - {device.Name}, Серийный номер - {device.SerialNumber},  Комната подключения - {device.Room.Name}");
         }
+
+
     }
 }
